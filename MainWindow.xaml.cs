@@ -50,9 +50,9 @@ namespace MangaDownloader
             MangaRetrievers = new IMangaRetriever[]
             {
                 new MangaPillRetriever(),
-                new MangakaKalotRetriever(),
-                new MangakaKalotRetriever("MangaNelo", "https://manganelo.com/"),
-                new MangaEnRetriever(),
+                //new MangakaKalotRetriever(),
+                //new MangakaKalotRetriever("MangaNelo", "https://manganelo.com/"),
+                //new MangaEnRetriever(),
             };
 
             MangaRetrieverNames = (from MangaRetriever in MangaRetrievers select MangaRetriever.RetrieverName).ToList();
@@ -153,16 +153,6 @@ namespace MangaDownloader
             OnPropertyChanged("MaxChaptersWinSize");
         }
 
-        private void ViewMangaInfo_Click(object sender, RoutedEventArgs args)
-        {
-            var mangaInfoWindow = new MangaInfoWindow
-            {
-                Manga = (Manga)mangaListBox.SelectedItem,
-                Owner = this
-            };
-            mangaInfoWindow.ShowDialog();
-        }
-
         private async void AddManga_Click(object sender, RoutedEventArgs args)
         {
             var searchMangaDialog = new SearchMangaDialog
@@ -191,14 +181,19 @@ namespace MangaDownloader
                     OnPropertyChanged("Mangas");
                     mangaListBox.Items.Refresh();
                     var retriever = MangaRetrievers[searchMangaDialog.SelectedRetrieverIndex];
-                    await Task.Factory.StartNew(() => retriever.FetchManga(Mangas, txt), TaskCreationOptions.AttachedToParent);
+                    await Task.Factory.StartNew(
+                        () => retriever.FetchManga(Mangas, txt), 
+                        TaskCreationOptions.AttachedToParent
+                    );
                     Mangas.Remove(loadingManga);
                     OnPropertyChanged("Mangas");
                     mangaListBox.Items.Refresh();
                 }
             }
             else
+            {
                 Debug.WriteLine("cancelled request");
+            }
         }
 
         private void MoveMangaUp_Click(object sender, RoutedEventArgs args)
@@ -310,7 +305,7 @@ namespace MangaDownloader
 
             if (!Directory.Exists(mangaDir))
                 Directory.CreateDirectory(mangaDir);
-            Process.Start($"explorer", $" /select,\"{mangaDir}\"");
+            Process.Start("explorer", $" /select,\"{mangaDir}\"");
         }
 
         private async void DownloadAllMangaChapters_Click(object sender, RoutedEventArgs args)
