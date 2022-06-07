@@ -126,14 +126,6 @@
                                         <Grid.ContextMenu>
                                             <ContextMenu Tag="{Binding Address}"
                                                          Visibility="{Binding IsAvailable, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource AvailabilityToMangaIconVisibilityConverter}}">
-                                                <MenuItem Click="ViewMangaInfo_Click">
-                                                    <MenuItem.Header>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <materialDesign:PackIcon Kind="ViewCompactOutline" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                            <TextBlock Text="View Info" Margin="5 0 0 0" VerticalAlignment="Center"/>
-                                                        </StackPanel>
-                                                    </MenuItem.Header>
-                                                </MenuItem>
                                                 <MenuItem Click="DownloadAllMangaChapters_Click">
                                                     <MenuItem.Header>
                                                         <StackPanel Orientation="Horizontal">
