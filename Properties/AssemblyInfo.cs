@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MangaDownloader")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("This app helps you download manga from different sites and archive them as well.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
+[assembly: AssemblyCompany("B3zaleel_Olakunori")]
 [assembly: AssemblyProduct("MangaDownloader")]
-[assembly: AssemblyCopyright("Copyright © HP Inc. 2022")]
+[assembly: AssemblyCopyright("Copyright © B3zaleel_Olakunori 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
