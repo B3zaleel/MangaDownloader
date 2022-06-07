@@ -4,9 +4,426 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MangaDownloader"
+        xmlns:conv="clr-namespace:MangaDownloader.Converters"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Loaded="Window_Loaded"
+        Title="Manga Downloader" Height="450" Width="800" Icon="./Assets/Icon.png">
+    <Window.Resources>
+        <!-- Chapter list item converters -->
+        <conv:ProgressToMarginConverter x:Key="ProgressToMarginConverter"/>
+        <conv:ProgressToCornerRadiusConverter x:Key="ProgressToCornerRadiusConverter"/>
+        <conv:ProgressToBackgroundConverter x:Key="ProgressToBackgroundConverter"/>
+        <conv:ProgressToTextConverter x:Key="ProgressToTextConverter"/>
+        <conv:ProgressToVisibilityConverter x:Key="ProgressToVisibilityConverter"/>
+        <conv:CompletionToVisibilityConverter x:Key="CompletionToVisibilityConverter"/>
+        <conv:BooleanStateSwitchingConverter x:Key="BooleanStateSwitchingConverter"/>
+        <conv:IsUpdateEnabledToUpdateIconVisibilityConverter x:Key="IsUpdateEnabledToUpdateIconVisibilityConverter"/>
+        <conv:IsUpdateEnabledToUpdateLoadingVisibilityConverter x:Key="IsUpdateEnabledToUpdateLoadingVisibilityConverter"/>
+        <!-- Manga list item converters -->
+        <conv:CoverImageToImageSourceConverter x:Key="CoverImageToImageSourceConverter"/>
+        <conv:CoverImageToMenuItemVisibilityConverter x:Key="CoverImageToMenuItemVisibilityConverter"/>
+        <conv:AvailabilityToLoadingIconVisibilityConverter x:Key="AvailabilityToLoadingIconVisibilityConverter"/>
+        <conv:AvailabilityToMangaIconVisibilityConverter x:Key="AvailabilityToMangaIconVisibilityConverter"/>
+        <conv:ThemeBackgroundConverter x:Key="ThemeBackgroundConverter"/>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="15 0" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Margin="0 5">
+                <Label FontWeight="Bold">
+                    Book Format
+                </Label>
+                <ComboBox Name="bookFormatComboBox" SelectedIndex="{Binding BookFormatSelectedIndex, Mode=TwoWay}"
+                          IsEnabled="{Binding IOOperationOngoing, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanStateSwitchingConverter}}"></ComboBox>
+            </StackPanel>
+            <!--<Grid Margin="5 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="0.7*"/>
+                </Grid.ColumnDefinitions>
+                <Label Margin="0 0 10 0" Grid.Column="0" FontWeight="Bold">
+                    Chapters To Display
+                </Label>
+                <Slider x:Name="chaptersWindowFrameSlider" Grid.Column="1" HorizontalAlignment="Stretch" Minimum="1" Maximum="{Binding MaxChaptersWinSize, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" TickFrequency="1" SmallChange="1"/>
+            </Grid>-->
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="0.6*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Margin="5 0 0 0" BorderBrush="Gray" BorderThickness="1.5">
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="60"/>
+                        </Grid.RowDefinitions>
+                        <ListBox x:Name="mangaListBox" Grid.Row="0" Panel.ZIndex="2" SelectionMode="Single" HorizontalContentAlignment="Stretch"
+                                  ItemsSource="{Binding Mangas, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="MangaListBox_SelectionChanged" 
+                                 KeyDown="MoveMangaUp_KeyDown">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid MinHeight="55"  VerticalAlignment="Stretch" Background="{Binding Path=Address, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ThemeBackgroundConverter}}" HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <materialDesign:PackIcon Grid.Column="0" Kind="BookImage" Width="50" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                                 Visibility="{Binding IsAvailable, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource AvailabilityToMangaIconVisibilityConverter}}"/>
+                                        <Image Grid.Column="0" Panel.ZIndex="2"
+                                               Source="{Binding Cover, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CoverImageToImageSourceConverter}}"/>
+
+                                        <materialDesign:PackIcon Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="3" Kind="Loading" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                                 Visibility="{Binding IsAvailable, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource AvailabilityToLoadingIconVisibilityConverter}}">
+                                            <materialDesign:PackIcon.RenderTransform>
+                                                <RotateTransform x:Name="loadingTransform" CenterX="20" CenterY="20"/>
+                                            </materialDesign:PackIcon.RenderTransform>
+
+                                            <materialDesign:PackIcon.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.RenderTransform).(RotateTransform.Angle)"
+                                                     From="0" To="360" Duration="0:0:2" RepeatBehavior="Forever"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </materialDesign:PackIcon.Triggers>
+                                        </materialDesign:PackIcon>
+
+                                        <Grid Grid.Column="1" Margin="10 0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+
+                                        <Grid Grid.Column="2">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Button Click="MoveMangaUp_Click">
+                                                <materialDesign:PackIcon Kind="ArrowUp"/>
+                                            </Button>
+                                            <Button Grid.Row="1" Click="MoveMangaDown_Click">
+                                                <materialDesign:PackIcon Kind="ArrowDown"/>
+                                            </Button>
+                                        </Grid>
+
+                                        <Grid.ContextMenu>
+                                            <ContextMenu Tag="{Binding Address}"
+                                                         Visibility="{Binding IsAvailable, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource AvailabilityToMangaIconVisibilityConverter}}">
+                                                <MenuItem Click="ViewMangaInfo_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="ViewCompactOutline" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="View Info" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="DownloadAllMangaChapters_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="DownloadMultiple" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Download All" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="ArchiveAllMangaChapters_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="ArchiveAdd" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Archive All" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="RemoveManga_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="FolderRemove" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Remove" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="ShowMangaInExplorer_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="FolderOpen" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Show in Explorer" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="LoadMangaCoverImage_Click" Visibility="{Binding Cover, Converter={StaticResource CoverImageToMenuItemVisibilityConverter}}">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="BrokenImage" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Load Cover" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Grid.ContextMenu>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" RequestBringIntoView="ListViewBoxStackPanel_RequestBringIntoView"></StackPanel>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+
+                        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0 4 0 0" Height="2" Margin="10 0"/>
+                        <StackPanel Grid.Row="2" Panel.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Button Margin="10" Click="AddManga_Click"
+                                    IsEnabled="{Binding IOOperationOngoing, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanStateSwitchingConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="AddCircle" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Add More" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Column="1" Margin="5 0 5 0" BorderBrush="Gray" BorderThickness="1.5">
+                <ScrollViewer ScrollViewer.PanningRatio="1.5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="60"/>
+                        </Grid.RowDefinitions>
+
+                        <ListView x:Name="chapterListView" Grid.Row="0" SelectionChanged="ChapterListView_SelectionChanged" SelectionMode="Single" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                 ItemsSource="{Binding MangaChapters, BindsDirectlyToSource=True, UpdateSourceTrigger=PropertyChanged}" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" 
+                                  KeyDown="ChapterListView_KeyDown">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid MinHeight="35" Margin="0" Background="{Binding Path=Address, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ThemeBackgroundConverter}}" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Panel.ZIndex="2" Margin="5 0" Text="{Binding Title}" VerticalAlignment="Center" FontSize="15"/>
+                                        <Border Grid.Column="1" Height="30" 
+                                                CornerRadius="{Binding Progress, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProgressToCornerRadiusConverter}}"
+                                                Margin="{Binding Progress, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProgressToMarginConverter}}"
+                                                Background="{Binding Progress, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProgressToBackgroundConverter}}">
+                                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                                                <!--<Path>
+                                                    <Path.Style>
+                                                        <Style TargetType="Path">
+                                                            <Style.Triggers>
+                                                                <Trigger>
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <Int16Animation Duration="0:0:0.450" From="0" To="360" Storyboard.TargetProperty="LayoutTransform.RotateTransform"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Path.Style>
+                                                </Path>-->
+
+                                                <TextBlock Text="{Binding Progress, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ProgressToTextConverter}}" 
+                                                           VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Lavender" FontSize="12"/>
+
+                                                <Path Margin="-2 -2 0 0" Panel.ZIndex="2" Visibility="{Binding IsComplete, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CompletionToVisibilityConverter}}" Fill="WhiteSmoke" Stroke="WhiteSmoke" Data="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                                            </Grid>
+                                        </Border>
+
+                                        <Grid.ContextMenu>
+                                            <ContextMenu Tag="{Binding Id}">
+                                                <MenuItem Click="DownloadChapter_Click" InputGestureText="Shift + D">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="CloudDownload" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Download" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="ArchiveChapter_Click" InputGestureText="Shift + A">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <materialDesign:PackIcon Kind="Archive" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Archive" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="UnarchiveChapter_Click" InputGestureText="Shift + U">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <materialDesign:PackIcon Kind="Unarchive" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Unarchive" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="OpenChapter_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <materialDesign:PackIcon Kind="ArchiveView" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Open" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="RemoveChapter_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <materialDesign:PackIcon Kind="ArchiveRemove" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Remove" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                                <MenuItem Click="ShowChapterInExplorer_Click">
+                                                    <MenuItem.Header>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <materialDesign:PackIcon Kind="FolderOpen" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Text="Show in Explorer" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </MenuItem.Header>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Grid.ContextMenu>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" RequestBringIntoView="ListViewBoxStackPanel_RequestBringIntoView"></StackPanel>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+                        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="2" Height="2" Margin="10 0"/>
+                        <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Button Margin="10" Click="UpdateChapters_Click" IsEnabled="{Binding IsUpdateEnabled, UpdateSourceTrigger=PropertyChanged}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Update" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                             Visibility="{Binding IsUpdateEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsUpdateEnabledToUpdateIconVisibilityConverter}}"/>
+                                    <materialDesign:PackIcon Kind="Loading" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                             Visibility="{Binding IsUpdateEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsUpdateEnabledToUpdateLoadingVisibilityConverter}}">
+                                        <materialDesign:PackIcon.RenderTransform>
+                                            <RotateTransform x:Name="loadingTransform" CenterX="12.5" CenterY="12.5"/>
+                                        </materialDesign:PackIcon.RenderTransform>
+
+                                        <materialDesign:PackIcon.Triggers>
+                                            <EventTrigger RoutedEvent="Loaded">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(Rectangle.RenderTransform).(RotateTransform.Angle)"
+                                                     From="0" To="360" Duration="0:0:2" RepeatBehavior="Forever"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </materialDesign:PackIcon.Triggers>
+                                    </materialDesign:PackIcon>
+                                    <TextBlock Text="Update" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <materialDesign:Snackbar x:Name="statusNotifSnackbar" Grid.RowSpan="3" Panel.ZIndex="5" Margin="20" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+        <Grid x:Name="toolBarPanel" Grid.Row="2" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
+                <materialDesign:PackIcon Name="networkStatus" Margin="10 0" Foreground="Red" Kind="NetworkStrength0" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Button x:Name="listItemBg" Background="{Binding ListItemBackground, BindsDirectlyToSource=True, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False" Width="0" Height="0"/>
+                <MediaElement Name="notificationAudioElement" LoadedBehavior="Manual" Volume="1" Position="0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                <Button x:Name="changeFolderBtn" Margin=" 0" Click="OpenFolder_Click"
+                    IsEnabled="{Binding IOOperationOngoing, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanStateSwitchingConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="FolderLocation" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Change Folder" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Click="OpenFile_Click">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="FileLocation" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Change File" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem Click="OpenFolder_Click">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="FolderLocation" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Change Folder" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button Margin="20 0" Click="Save_Click"
+                    IsEnabled="{Binding IOOperationOngoing, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanStateSwitchingConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSave" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Save" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Click="SaveAndExit_Click">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="ContentSaveAlert" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Save &amp; Exit" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem Click="Save_Click">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="ContentSave" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Save" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem Click="SaveAs_Click">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="ContentSaveEdit" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Save As" Margin="5 0 0 0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
