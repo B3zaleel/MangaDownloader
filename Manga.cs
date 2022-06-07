@@ -18,6 +18,7 @@ namespace MangaDownloader
         JPEG,
         JPG,
         PNG,
+        TIFF,
     }
 
     public class Manga : INotifyPropertyChanged
