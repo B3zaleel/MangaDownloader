@@ -1,0 +1,48 @@
+﻿<Window x:Class="MangaDownloader.SearchMangaDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MangaDownloader"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        WindowStartupLocation="CenterOwner" Icon="./Assets/Icon.png"
+        Title="Search Manga" Height="180" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="10" Orientation="Horizontal">
+            <Label FontWeight="Bold" VerticalAlignment="Center">
+                Retriever
+            </Label>
+            <ComboBox Name="retrieverComboBox" 
+                      ItemsSource="{Binding RetrieverNames, Mode=OneWay}" 
+                      SelectedIndex="{Binding SelectedRetrieverIndex, Mode=TwoWay}"
+                      VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="10" Orientation="Horizontal">
+            <Label FontWeight="Bold" VerticalAlignment="Center">
+                URL
+            </Label>
+            <TextBox x:Name="searchQueryTxb" 
+                     Text="{Binding URL, Mode=TwoWay}" 
+                     VerticalAlignment="Center" 
+                     MinWidth="250" 
+                     MouseDoubleClick="SearchQueryTxb_MouseDown" KeyDown="SearchQueryTxb_KeyDown"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button Margin="20 5" Click="Ok_Click">
+                OK
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>
