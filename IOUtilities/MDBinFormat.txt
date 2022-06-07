@@ -1,0 +1,46 @@
+﻿<MagicNumber: Int64> # 0x7768667378 or MDBIN when read as ASCII
+<MangaCount: Int32>
+{
+	<TitleLength: Int32>
+	[Title: Char]*<TitleLength>
+	[BookFormat: BookFormat_Enum] # Enum is written as String
+	<RetrieverNameLength: Int32>
+	[RetrieverName: Char]*<RetrieverNameLength>
+	[CoverImageType: ImageTypes_Enum] # Enum is written as String
+	//{
+	//	<CoverImageDataLength: Int32>
+	//	[Data: Byte]*<CoverImageDataLength>
+	//	[AddressLength: Int32],
+	//	[Address: Char]*<AddressLength>
+	//}
+	<OtherPropsLength: Int32>
+	(
+	 [PropKeyLength: Int32], [PropKey: Char]*<PropKeyLength>;
+	 [PropValueLength: Int32], [PropValue: Char]*<PropValueLength>
+	)*<OtherPropsLength>
+
+	[ChaptersCount: Int32] # The number of published chapters
+	<ChaptersLength: Int32>
+	{
+		[Id: Single]
+		[TitleLength: Int32]
+		[Title: Char]*<TitleLength>
+		[PagesLength: Int32]
+		{
+			[Saved: Boolean]
+			[AddressLength: Int32]
+			[Address: Char]*<AddressLength>
+		}*<PagesLength>
+		[AddressLength: Int32]
+		[Address: Char]*<AddressLength>
+	}*<ChaptersLength>
+
+	<DescriptionLength: Int32>
+	[Description: Char]*<DescriptionLength>
+	<GenresLength: Int32>
+	(
+	 [ValueLength: Int32], [Value: Char]*<ValueLength>
+	)*<GenresLength>
+	<AddressLength: Int32>
+	[Address: Char]*<AddressLength>
+}*<MangaCount>
