@@ -37,25 +37,36 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="15 0" VerticalAlignment="Center">
-            <StackPanel Orientation="Horizontal" Margin="0 5">
+        <Grid Grid.Row="0" Margin="15 0" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="0 5" Grid.Column="0">
                 <Label FontWeight="Bold">
                     Book Format
                 </Label>
                 <ComboBox Name="bookFormatComboBox" SelectedIndex="{Binding BookFormatSelectedIndex, Mode=TwoWay}"
                           IsEnabled="{Binding IOOperationOngoing, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanStateSwitchingConverter}}"></ComboBox>
             </StackPanel>
-            <!--<Grid Margin="5 5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="0.7*"/>
-                </Grid.ColumnDefinitions>
-                <Label Margin="0 0 10 0" Grid.Column="0" FontWeight="Bold">
-                    Chapters To Display
-                </Label>
-                <Slider x:Name="chaptersWindowFrameSlider" Grid.Column="1" HorizontalAlignment="Stretch" Minimum="1" Maximum="{Binding MaxChaptersWinSize, UpdateSourceTrigger=PropertyChanged}" AutoToolTipPlacement="TopLeft" TickFrequency="1" SmallChange="1"/>
-            </Grid>-->
-        </StackPanel>
+
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+                <Button Click="ChangeTheme_Click">
+                    <materialDesign:PackIcon 
+                        Grid.Column="0" 
+                        Kind="SunCompass" 
+                        Width="40" 
+                        Height="40" 
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Center"
+                        Visibility="{
+                        Binding IsAvailable, 
+                        UpdateSourceTrigger=PropertyChanged, 
+                        Converter={StaticResource AvailabilityToMangaIconVisibilityConverter}
+                    }"/>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -206,7 +217,7 @@
                                   KeyDown="ChapterListView_KeyDown">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid MinHeight="35" Margin="0" Background="{Binding Path=Address, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ThemeBackgroundConverter}}" VerticalAlignment="Stretch">
+                                    <Grid MinHeight="35" Margin="0" Background="{Binding IsDarkModeEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ThemeBackgroundConverter}}" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="50"/>

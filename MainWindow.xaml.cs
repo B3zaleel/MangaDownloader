@@ -119,6 +119,7 @@ namespace MangaDownloader
         }
 
         private bool IOOperationOngoing { get; set; }
+        private bool IsDarkModeEnabled { get; set; }
         public bool IsUpdateEnabled
         {
             get
@@ -598,6 +599,34 @@ namespace MangaDownloader
 
 
         #endregion
+
+        private void ChangeTheme_Click(object sender, RoutedEventArgs args)
+        {
+            IsDarkModeEnabled = !IsDarkModeEnabled;
+            var darkTheme = new ResourceDictionary()
+            {
+                Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml")
+            };
+            var lightTheme = new ResourceDictionary()
+            {
+                Source = new Uri("pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml")
+            };
+            if (IsDarkModeEnabled)
+            {
+                if (!Application.Current.Resources.MergedDictionaries.Contains(darkTheme))
+                    Application.Current.Resources.MergedDictionaries.Add(darkTheme);
+                if (Application.Current.Resources.MergedDictionaries.Contains(lightTheme))
+                    Application.Current.Resources.MergedDictionaries.Remove(lightTheme);
+            }
+            else
+            {
+                if (!Application.Current.Resources.MergedDictionaries.Contains(lightTheme))
+                    Application.Current.Resources.MergedDictionaries.Add(lightTheme);
+                if (Application.Current.Resources.MergedDictionaries.Contains(darkTheme))
+                    Application.Current.Resources.MergedDictionaries.Remove(darkTheme);
+            }
+            OnPropertyChanged("IsDarkModeEnabled");
+        }
 
         private async void UpdateNetworkStatus_Event(object sender, ElapsedEventArgs args)
         {
