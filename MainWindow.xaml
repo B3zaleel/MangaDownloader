@@ -28,7 +28,6 @@
         <conv:CoverImageToMenuItemVisibilityConverter x:Key="CoverImageToMenuItemVisibilityConverter"/>
         <conv:AvailabilityToLoadingIconVisibilityConverter x:Key="AvailabilityToLoadingIconVisibilityConverter"/>
         <conv:AvailabilityToMangaIconVisibilityConverter x:Key="AvailabilityToMangaIconVisibilityConverter"/>
-        <!--<conv:ThemeBackgroundConverter x:Key="ThemeBackgroundConverter"/>-->
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
