@@ -112,8 +112,11 @@ namespace MangaDownloader
             {
                 if (bookFormatComboBox.SelectedIndex > -1 && bookFormatComboBox.SelectedIndex < bookFormatComboBox.Items.Count && value > -1)
                 {
-                    var selectedManga = Mangas[mangaListBox.SelectedIndex];
-                    selectedManga.BookFormat = (BookFormats)Enum.GetValues(typeof(BookFormats)).GetValue(value);
+                    if (Mangas.Count > mangaListBox.SelectedIndex && mangaListBox.SelectedIndex >= 0)
+                    {
+                        var selectedManga = Mangas[mangaListBox.SelectedIndex];
+                        selectedManga.BookFormat = (BookFormats)Enum.GetValues(typeof(BookFormats)).GetValue(value);
+                    }
                 }
             }
         }
@@ -783,11 +786,15 @@ namespace MangaDownloader
         {
             await Task.Factory.StartNew(() =>
             {
-                if (!IOOperationOngoing)
+                if (!IOOperationOngoing && !String.IsNullOrEmpty(SettingsFilePath))
                 {
                     IOOperationOngoing = true;
                     OnPropertyChanged("IOOperationOngoing");
-                    var serializationType = SettingsFilePath.EndsWith(".min.json") ? SerializationType.JSONMinified : SettingsFilePath.EndsWith(".json") ? SerializationType.JSON : SerializationType.MDBin;
+                    var serializationType = SerializationType.MDBin;
+                    if (SettingsFilePath.EndsWith(".min.json"))
+                        serializationType = SerializationType.JSONMinified;
+                    else if (SettingsFilePath.EndsWith(".json"))
+                        serializationType = SerializationType.JSON;
                     MangaDownloaderSettings.Serialize(SettingsFilePath, Mangas, serializationType);
                     Dispatcher.Invoke(() =>
                     {
