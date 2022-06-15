@@ -28,7 +28,7 @@
         <conv:CoverImageToMenuItemVisibilityConverter x:Key="CoverImageToMenuItemVisibilityConverter"/>
         <conv:AvailabilityToLoadingIconVisibilityConverter x:Key="AvailabilityToLoadingIconVisibilityConverter"/>
         <conv:AvailabilityToMangaIconVisibilityConverter x:Key="AvailabilityToMangaIconVisibilityConverter"/>
-        <conv:ThemeBackgroundConverter x:Key="ThemeBackgroundConverter"/>
+        <!--<conv:ThemeBackgroundConverter x:Key="ThemeBackgroundConverter"/>-->
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -87,7 +87,7 @@
                                  KeyDown="MoveMangaUp_KeyDown">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid MinHeight="55"  VerticalAlignment="Stretch" Background="{Binding Path=Address, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ThemeBackgroundConverter}}" HorizontalAlignment="Stretch">
+                                    <Grid MinHeight="55"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="50"/>
                                             <ColumnDefinition Width="*"/>
@@ -217,7 +217,7 @@
                                   KeyDown="ChapterListView_KeyDown">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid MinHeight="35" Margin="0" Background="{Binding IsDarkModeEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ThemeBackgroundConverter}}" VerticalAlignment="Stretch">
+                                    <Grid MinHeight="35" Margin="0" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="50"/>

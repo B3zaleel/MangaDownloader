@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -109,25 +110,6 @@ namespace MangaDownloader.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value is Visibility.Collapsed;
-        }
-    }
-
-    public class ThemeBackgroundConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var currentTime = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Second, DateTime.Now.Millisecond);
-            var isDayTime = currentTime >= MainWindow.DayOpening && currentTime <= MainWindow.DayClosing;
-            if ((bool)Application.Current.Properties["DarkTheme"])
-            {
-                return new SolidColorBrush(Colors.LightCoral);
-            }
-            return new SolidColorBrush(Colors.BlanchedAlmond);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return "";
         }
     }
 
