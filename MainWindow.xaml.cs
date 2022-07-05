@@ -386,10 +386,10 @@ namespace MangaDownloader
         {
             var chapterId = float.Parse(((ContextMenu)((MenuItem)sender).Parent).Tag.ToString());
             var chapter = Mangas[mangaListBox.SelectedIndex].Chapters.ToList().Find(item => item.Id == chapterId);
-            var filesAavailable = chapter.Parent.BookFormat == BookFormats.none
+            var filesAvailable = chapter.Parent.BookFormat == BookFormats.none
                 ? chapter.Pages.All(page => File.Exists($"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}\\{page.Address.Split('/').Last()}"))
                 : File.Exists($"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}.{chapter.Parent.BookFormat}");
-            if (!chapter.IsComplete && !filesAavailable)
+            if (!chapter.IsComplete && !filesAvailable)
             {
                 try
                 {
@@ -442,38 +442,35 @@ namespace MangaDownloader
             var chapterDir = $"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}";
             if (!Directory.Exists(chapterDir) && chapter.Parent.BookFormat == BookFormats.none)
             {
-                MessageBox.Show("Folder does not exist");
+                SendNotification("Folder does not exist", NotificationType.Error);
                 return;
             }
             var chapterFile = $"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}.{chapter.Parent.BookFormat}";
             if (!File.Exists(chapterFile))
             {
-                MessageBox.Show("Archive does not exist");
+                SendNotification("Archive does not exist", NotificationType.Error);
                 return;
             }
 
             if (File.Exists(chapterFile))
                 Process.Start($"explorer", $" \"{chapterFile}\"");
             else
-                MessageBox.Show(this, "The chapter hasn't been saved yet.");
+                SendNotification("The chapter hasn't been saved yet.", NotificationType.Error);
         }
 
 
         private void ShowChapterInExplorer_Click(object sender, RoutedEventArgs args)
         {
-            //var chapterId = float.Parse(((ContextMenu)((MenuItem)sender).Parent).Tag.ToString());
             var chapter = Mangas[mangaListBox.SelectedIndex].Chapters[chapterListView.SelectedIndex];
             var chapterDir = $"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}";
             var chapterFile = $"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}.{chapter.Parent.BookFormat}";
 
-            //Debug.WriteLine(chapterFile);
-            //Debug.WriteLine(chapterDir);
             if (File.Exists(chapterFile))
                 Process.Start($"explorer", $" /select,\"{chapterFile}\"");
             else if (Directory.Exists(chapterDir))
                 Process.Start($"explorer", $" /select,\"{chapterDir}\"");
             else
-                MessageBox.Show("The file hasn't been saved yet.");
+                SendNotification("The file hasn't been saved yet.", NotificationType.Error);
         }
 
         private void RemoveChapter_Click(object sender, RoutedEventArgs args)
@@ -864,13 +861,12 @@ namespace MangaDownloader
                     default:
                         break;
                 }
-                notificationAudioElement.Play();
                 snackbar.MessageQueue.Enqueue(notification);
                 notificationAudioElement.MediaOpened += (obj, ev) => {
                     snackbar.MessageQueue.Enqueue(notification);
-                    MessageBox.Show("Music played");
+                    Debug.WriteLine("Music played");
                 };
-
+                notificationAudioElement.Play();
             });
         }
 
@@ -891,12 +887,14 @@ namespace MangaDownloader
                 Application.Current.Resources.MergedDictionaries.Add(lightTheme);
                 Application.Current.Resources.MergedDictionaries.Remove(darkTheme);
                 Application.Current.Properties.Add("DarkTheme", false);
+                IsDarkModeEnabled = false;
             }
             else
             {
                 Application.Current.Resources.MergedDictionaries.Add(darkTheme);
                 Application.Current.Resources.MergedDictionaries.Remove(lightTheme);
                 Application.Current.Properties.Add("DarkTheme", true);
+                IsDarkModeEnabled = true;
             }
 
             //Process any command line args
