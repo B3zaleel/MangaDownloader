@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MangaDownloader.Events;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -68,15 +69,26 @@ namespace MangaDownloader.IOUtilities
             if (!Directory.Exists(chapterDir))
                 return;
             var chapterFile = $"{rootDir}\\{ValidateFileName(chapter.Parent.Title)}\\{ValidateFileName(chapter.Title)}.{chapter.Parent.BookFormat}";
-
+            var archiverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Libs", "7za.exe");
+            if (!File.Exists(archiverPath))
+                archiverPath = "C:\\Program Files\\7-Zip\\7z.exe";
+            if (!File.Exists(archiverPath))
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var evt = new NotificationEventArgs("Archiver doesn't exist", NotificationType.Error);
+                    Application.Current.MainWindow.RaiseEvent(evt);
+                });
+                return;
+            }
             switch (chapter.Parent.BookFormat)
             {
                 case BookFormats.cbz:
                     {
-                        //Process.Start("C:\\Program Files\\7-Zip\\7z.exe", $" a -tzip \"{chapterFile}\" \"{chapterDir}\\*\"");
+                        
                         Process.Start(new ProcessStartInfo()
                         {
-                            FileName = "C:\\Program Files\\7-Zip\\7z.exe",
+                            FileName = archiverPath,
                             Arguments = $" a -tzip \"{chapterFile}\" \"{chapterDir}\\*\"",
                             CreateNoWindow = true,
                             WindowStyle = ProcessWindowStyle.Hidden,
@@ -85,10 +97,9 @@ namespace MangaDownloader.IOUtilities
                     }
                 case BookFormats.cb7:
                     {
-                        //Process.Start("C:\\Program Files\\7-Zip\\7z.exe", $" a -t7z -bb3 -mx9 \"{chapterFile}\" \"{chapterDir}\\*\"");
                         Process.Start(new ProcessStartInfo()
                         {
-                            FileName = "C:\\Program Files\\7-Zip\\7z.exe",
+                            FileName = archiverPath,
                             Arguments = $" a -t7z -bb3 -mx9 \"{chapterFile}\" \"{chapterDir}\\*\"",
                             CreateNoWindow = true,
                             WindowStyle = ProcessWindowStyle.Hidden,
@@ -98,8 +109,14 @@ namespace MangaDownloader.IOUtilities
                 case BookFormats.none:
                     break;
                 default:
-                    MessageBox.Show("The format is currently unavailable.");
-                    break;
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            var evt = new NotificationEventArgs("The selected format is currently unavailable.", NotificationType.Error);
+                            Application.Current.MainWindow.RaiseEvent(evt);
+                        });
+                        break;
+                    }
             }
         }
 
@@ -109,14 +126,25 @@ namespace MangaDownloader.IOUtilities
             var chapterFile = $"{rootDir}\\{ValidateFileName(chapter.Parent.Title)}\\{chapter.Id}.{chapter.Parent.BookFormat}";
             if (!File.Exists(chapterFile))
                 return;
+            var archiverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Libs", "7za.exe");
+            if (!File.Exists(archiverPath))
+                archiverPath = "C:\\Program Files\\7-Zip\\7z.exe";
+            if (!File.Exists(archiverPath))
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var evt1 = new NotificationEventArgs("Archiver doesn't exist", NotificationType.Error);
+                    Application.Current.MainWindow.RaiseEvent(evt1);
+                });
+                return;
+            }
             switch (chapter.Parent.BookFormat)
             {
                 case BookFormats.cbz:
                     {
-                        //Process.Start("C:\\Program Files\\7-Zip\\7z.exe", $" e -tzip \"{chapterFile}\" \"{chapterDir}\\*\"");
                         Process.Start(new ProcessStartInfo()
                         {
-                            FileName = "C:/Program Files/7-Zip/7z.exe",
+                            FileName = archiverPath,
                             Arguments = $" e -tzip \"{chapterFile}\" \"{chapterDir}\\*\"",
                             CreateNoWindow = true,
                             WindowStyle = ProcessWindowStyle.Hidden,
@@ -127,7 +155,7 @@ namespace MangaDownloader.IOUtilities
                     {
                         Process.Start(new ProcessStartInfo()
                         {
-                            FileName = "C:/Program Files/7-Zip/7z.exe",
+                            FileName = archiverPath,
                             Arguments = $" e -t7z \"{chapterFile}\" \"{chapterDir}\\*\"",
                             CreateNoWindow = true,
                             WindowStyle = ProcessWindowStyle.Hidden,
@@ -137,8 +165,14 @@ namespace MangaDownloader.IOUtilities
                 case BookFormats.none:
                     break;
                 default:
-                    MessageBox.Show("The format is currently unavailable.");
-                    break;
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            var evt = new NotificationEventArgs("The selected format is currently unavailable.", NotificationType.Error);
+                            Application.Current.MainWindow.RaiseEvent(evt);
+                        });
+                        break;
+                    }
             }
         }
 

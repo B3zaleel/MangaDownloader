@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MangaDownloader.Events;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,7 +31,11 @@ namespace MangaDownloader.MangaRetrievers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No Internet Access: \n {ex.Message}");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var evt = new NotificationEventArgs($"No Internet Access: \n {ex.Message}", NotificationType.Error);
+                    Application.Current.MainWindow.RaiseEvent(evt);
+                });
                 return;
             }
             htmlDoc.LoadXml(XMLHelper.SanitizeHTML(xml));
@@ -45,7 +50,11 @@ namespace MangaDownloader.MangaRetrievers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to download cover image: \n {ex.Message}");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var evt = new NotificationEventArgs($"Failed to download cover image: \n\t{ex.Message}", NotificationType.Error);
+                    Application.Current.MainWindow.RaiseEvent(evt);
+                });
             }
             manga.Cover = coverImgData != null
                 ? new CoverImage()
@@ -112,7 +121,11 @@ namespace MangaDownloader.MangaRetrievers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No Internet Access: \n {ex.Message}");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var evt = new NotificationEventArgs($"No Internet Access: \n\t{ex.Message}", NotificationType.Error);
+                    Application.Current.MainWindow.RaiseEvent(evt);
+                });
                 return null;
             }
             htmlDoc.LoadXml(XMLHelper.SanitizeHTML(xml));
@@ -148,7 +161,11 @@ namespace MangaDownloader.MangaRetrievers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No Internet Access: \n {ex.Message}");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var evt = new NotificationEventArgs($"No Internet Access: \n\t{ex.Message}", NotificationType.Error);
+                    Application.Current.MainWindow.RaiseEvent(evt);
+                });
                 return;
             }
             htmlDoc.LoadXml(XMLHelper.SanitizeHTML(xml));
