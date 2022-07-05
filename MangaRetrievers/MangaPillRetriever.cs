@@ -18,7 +18,7 @@ namespace MangaDownloader.MangaRetrievers
         public string HomePage => "https://mangapill.com";
 
 
-        public void FetchManga(List<Manga> mangas, string mangaURL)
+        public void FetchManga(List<Manga> mangas, string url)
         {
             var manga = new Manga();
             var webClient = new WebClient();
@@ -26,7 +26,7 @@ namespace MangaDownloader.MangaRetrievers
             string xml;
             try
             {
-                xml = webClient.DownloadString(mangaURL);
+                xml = webClient.DownloadString(url);
             }
             catch (Exception ex)
             {
@@ -83,20 +83,24 @@ namespace MangaDownloader.MangaRetrievers
             }
             manga.Chapters = new List<Chapter>();
             manga.RetrieverName = RetrieverName;
-            manga.Address = mangaURL;
+            manga.Address = url;
 
-            var chapterElements = container.GetNthElement(3).GetElementsByTagName("a").OfType<XmlElement>().ToList();
+            var chapterElements = container.GetNthElement(1).GetElementsByTagName("a").OfType<XmlElement>().ToList();
             manga.ChaptersCount = chapterElements.Count;
             for (int i = 0; i < Math.Min(chapterElements.Count, MainWindow.MinChaptersToGet); i++)
             {
-                var chapter = FetchChapter(manga, $"{HomePage}{chapterElements[i].GetAttribute("href")}");
+                var chapter = FetchChapter(
+                    manga, 
+                    $"{HomePage}{chapterElements[i].GetAttribute("href")}",
+                    chapterElements[i].InnerText.Trim()
+                );
                 manga.Chapters.Add(chapter);
             }
 
             mangas.Add(manga);
         }
 
-        public Chapter FetchChapter(Manga parent, string chapterURL)
+        public Chapter FetchChapter(Manga parent, string url, string name)
         {
             var chapter = new Chapter(parent);
             var webClient = new WebClient();
@@ -104,7 +108,7 @@ namespace MangaDownloader.MangaRetrievers
             string xml;
             try
             {
-                xml = webClient.DownloadString(chapterURL);
+                xml = webClient.DownloadString(url);
             }
             catch (Exception ex)
             {
@@ -113,17 +117,14 @@ namespace MangaDownloader.MangaRetrievers
             }
             htmlDoc.LoadXml(XMLHelper.SanitizeHTML(xml));
             var container = htmlDoc.DocumentElement.GetElementsByClassName("container")[1];
-            var selectedOption = container.GetElementsByTagName("select").OfType<XmlElement>().ToList()[0].GetElementsByTagName("option").OfType<XmlElement>().ToList().Find(option => option.HasAttribute("selected"));
-
-            var titleExpression = new Regex("[0-9]+");
-            var numsArr = titleExpression.Matches(selectedOption.InnerText);
-
-            var urlParts = chapterURL.Split('/');
+            var urlParts = url.Split('/');
             chapter.Id = float.Parse(urlParts[urlParts.Length - 2].Split('-')[1]);
-            chapter.Title = selectedOption.InnerText;
-            var pageElements = container.GetElementsByClassName("text-color-alert-warn-text").Count > 1
-                ? container.GetNthElement(4).GetElementsByTagName("img").OfType<XmlElement>().ToList()
-                : container.GetNthElement(3).GetElementsByTagName("img").OfType<XmlElement>().ToList();
+            chapter.Title = name;
+            var chapterPages = container.GetElementsByTagName("chapter-page").OfType<XmlElement>().ToList();
+            var pageElements = (
+                from chapterPage
+                in chapterPages
+                select chapterPage.GetElementsByTagName("img").OfType<XmlElement>().First()).ToList();
             chapter.Pages = new List<Page>();
 
             for (int i = 0; i < pageElements.Count; i++)
@@ -135,7 +136,7 @@ namespace MangaDownloader.MangaRetrievers
                 });
             }
 
-            chapter.Address = chapterURL;
+            chapter.Address = url;
             chapter.IsComplete = chapter.Pages.All(item => item.Saved);
             //Debug.WriteLine($">> {chapter.Id}, {chapter.Pages.FindAll(item => item.Saved).Count()}, {chapter.Pages.Count}");
             chapter.Progress = chapter.Pages.Count == 0 ? (byte)100 : (byte)Math.Floor((double)chapter.Pages.FindAll(item => item.Saved).Count() / chapter.Pages.Count);
@@ -166,7 +167,11 @@ namespace MangaDownloader.MangaRetrievers
             //chapterElements.Count
             for (int i = 0; i < chapterElements.Count; i++)
             {
-                var chapter = FetchChapter(parent, $"{HomePage}{chapterElements[i].GetAttribute("href")}");
+                var chapter = FetchChapter(
+                    parent, 
+                    $"{HomePage}{chapterElements[i].GetAttribute("href")}", 
+                    chapterElements[i].InnerText.Trim()
+                );
                 var isOld = previousChapterTitles.Contains(chapter.Title);
                 if (!isOld)
                 {
