@@ -24,6 +24,7 @@ using System.Windows.Shell;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Timers;
+using MangaDownloader.Events;
 
 namespace MangaDownloader
 {
@@ -68,6 +69,7 @@ namespace MangaDownloader
             };
             networkStatusTimer.Elapsed += UpdateNetworkStatus_Event;
             statusNotifSnackbar.MessageQueue = new MaterialDesignThemes.Wpf.SnackbarMessageQueue();
+            NotificationRaised += Notification_Raised;
         }
 
         public string BaseDir { get; set; }
@@ -834,19 +836,19 @@ namespace MangaDownloader
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event NotificationRaisedEventHandler NotificationRaised;
         protected void OnPropertyChanged(string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public void SendNotification(string notification, NotificationType notificationType)
+        protected void Notification_Raised(object sender, NotificationEventArgs args)
         {
-
             Application.Current.MainWindow.Dispatcher.Invoke(() =>
             {
                 var snackbar = ((Grid)Application.Current.MainWindow.Content).Children.OfType<MaterialDesignThemes.Wpf.Snackbar>().ToList()[0];
 
-                switch (notificationType)
+                switch (args.NotificationType)
                 {
                     case NotificationType.FinishedTask:
                         notificationAudioElement.Source = new Uri($"pack://application:,,,/Assets/Sounds/sharp-592.mp3");
@@ -861,13 +863,18 @@ namespace MangaDownloader
                     default:
                         break;
                 }
-                snackbar.MessageQueue.Enqueue(notification);
+                snackbar.MessageQueue.Enqueue(args.Message);
                 notificationAudioElement.MediaOpened += (obj, ev) => {
-                    snackbar.MessageQueue.Enqueue(notification);
+                    snackbar.MessageQueue.Enqueue(args.Message);
                     Debug.WriteLine("Music played");
                 };
                 notificationAudioElement.Play();
             });
+        }
+
+        public void SendNotification(string notification, NotificationType notificationType)
+        {
+            NotificationRaised?.Invoke(this, new NotificationEventArgs(notification, notificationType));
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
