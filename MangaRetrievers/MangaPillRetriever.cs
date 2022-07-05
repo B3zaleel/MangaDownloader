@@ -116,31 +116,23 @@ namespace MangaDownloader.MangaRetrievers
                 return null;
             }
             htmlDoc.LoadXml(XMLHelper.SanitizeHTML(xml));
-            var container = htmlDoc.DocumentElement.GetElementsByClassName("container")[1];
             var urlParts = url.Split('/');
             chapter.Id = float.Parse(urlParts[urlParts.Length - 2].Split('-')[1]);
             chapter.Title = name;
-            var chapterPages = container.GetElementsByTagName("chapter-page").OfType<XmlElement>().ToList();
-            var pageElements = (
-                from chapterPage
-                in chapterPages
-                select chapterPage.GetElementsByTagName("img").OfType<XmlElement>().First()).ToList();
+            var chapterPages = htmlDoc.DocumentElement.GetElementsByTagName("chapter-page");
             chapter.Pages = new List<Page>();
-
-            for (int i = 0; i < pageElements.Count; i++)
+            for (int i = 0; i < chapterPages.Count; i++)
             {
+                var pageURLSrc = ((XmlElement)((XmlElement)chapterPages[i]).GetElementsByTagName("img")[0]).GetAttribute("data-src");
                 chapter.Pages.Add(new Page(chapter)
                 {
-                    Address = pageElements[i].GetAttribute("data-src"),
+                    Address = pageURLSrc,
                     Saved = false,
                 });
             }
-
             chapter.Address = url;
             chapter.IsComplete = chapter.Pages.All(item => item.Saved);
-            //Debug.WriteLine($">> {chapter.Id}, {chapter.Pages.FindAll(item => item.Saved).Count()}, {chapter.Pages.Count}");
             chapter.Progress = chapter.Pages.Count == 0 ? (byte)100 : (byte)Math.Floor((double)chapter.Pages.FindAll(item => item.Saved).Count() / chapter.Pages.Count);
-
             return chapter;
         }
 
