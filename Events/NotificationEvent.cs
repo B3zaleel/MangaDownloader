@@ -23,6 +23,7 @@ namespace MangaDownloader.Events
         {
             this.Message = message;
             this.NotificationType = type;
+            this.RoutedEvent = MainWindow.NotificationRoutedEvent;
         }
 
         public string Message { get; private set; }

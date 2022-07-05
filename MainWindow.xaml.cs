@@ -142,6 +142,12 @@ namespace MangaDownloader
         public static readonly byte MinChaptersToGet = 10;
         public static readonly TimeSpan DayOpening = new TimeSpan(6, 30, 0);
         public static readonly TimeSpan DayClosing = new TimeSpan(19, 15, 0);
+        internal static readonly RoutedEvent NotificationRoutedEvent = EventManager.RegisterRoutedEvent(
+            name: "NotificationRaised",
+            routingStrategy: RoutingStrategy.Direct,
+            handlerType: typeof(NotificationRaisedEventHandler),
+            ownerType: typeof(MainWindow)
+        );
 
         public IMangaRetriever[] MangaRetrievers { get; }
         private List<string> MangaRetrieverNames { get; }
@@ -859,7 +865,7 @@ namespace MangaDownloader
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event NotificationRaisedEventHandler NotificationRaised;
+        
         protected void OnPropertyChanged(string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -895,9 +901,18 @@ namespace MangaDownloader
             });
         }
 
+        /// <summary>
+        /// CLR accessors for assigning an event handler for notification events.
+        /// </summary>
+        public event NotificationRaisedEventHandler NotificationRaised
+        {
+            add { AddHandler(NotificationRoutedEvent, value); }
+            remove { RemoveHandler(NotificationRoutedEvent, value); }
+        }
+
         public void SendNotification(string notification, NotificationType notificationType)
         {
-            NotificationRaised?.Invoke(this, new NotificationEventArgs(notification, notificationType));
+            Notification_Raised(this, new NotificationEventArgs(notification, notificationType));
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
