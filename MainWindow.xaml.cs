@@ -388,21 +388,44 @@ namespace MangaDownloader
         {
             var chapterId = float.Parse(((ContextMenu)((MenuItem)sender).Parent).Tag.ToString());
             var chapter = Mangas[mangaListBox.SelectedIndex].Chapters.ToList().Find(item => item.Id == chapterId);
-            var filesAvailable = chapter.Parent.BookFormat == BookFormats.none
-                ? chapter.Pages.All(page => File.Exists($"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}\\{page.Address.Split('/').Last()}"))
-                : File.Exists($"{BaseDir}\\{IOHelper.ValidateFileName(chapter.Parent.Title)}\\{IOHelper.ValidateFileName(chapter.Title)}.{chapter.Parent.BookFormat}");
-            if (!chapter.IsComplete && !filesAvailable)
+            var filesAvailable = false;
+            var mangaFolderName = IOHelper.ValidateFileName(chapter.Parent.Title);
+            var chapterFolderName = IOHelper.ValidateFileName(chapter.Title);
+            if (File.Exists($"{BaseDir}\\{mangaFolderName}\\{chapterFolderName}.{chapter.Parent.BookFormat}"))
+                filesAvailable = true;
+            else
             {
-                try
+                filesAvailable = true;
+                foreach (var page in chapter.Pages)
                 {
-                    await Task.Factory.StartNew(() => IOHelper.DownloadChapter(BaseDir, chapter), TaskCreationOptions.AttachedToParent);
-                    SendNotification($"Downloaded {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
+                    if (!File.Exists($"{BaseDir}\\{mangaFolderName}\\{chapterFolderName}\\{page.Address.Split('/').Last()}"))
+                    {
+                        filesAvailable = false;
+                    }
                 }
-                catch (NotificationError ne)
+            }
+            if (!chapter.IsComplete)
+            {
+                if (!filesAvailable)
                 {
-                    SendNotification(ne.Notification, ne.Type);
+                    try
+                    {
+                        await Task.Factory.StartNew(() => IOHelper.DownloadChapter(BaseDir, chapter), TaskCreationOptions.AttachedToParent);
+                        SendNotification($"Downloaded {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
+                    }
+                    catch (NotificationError ne)
+                    {
+                        SendNotification(ne.Notification, ne.Type);
+                    }
                 }
-
+                else
+                {
+                    foreach (var page in chapter.Pages)
+                    {
+                        page.Saved = true;
+                    }
+                    chapter.IsComplete = true;
+                }
             }
         }
 
