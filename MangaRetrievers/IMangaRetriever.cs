@@ -6,8 +6,8 @@ namespace MangaDownloader.MangaRetrievers
     {
         string RetrieverName { get; }
         string HomePage { get; }
-        void FetchManga(List<Manga> mangas, string mangaURL);
-        Chapter FetchChapter(Manga parent, string chapterURL);
+        void FetchManga(List<Manga> mangas, string url);
+        Chapter FetchChapter(Manga parent, string url, string name);
         void UpdateChapters(Manga parent);
     }
 }
