@@ -171,19 +171,18 @@ namespace MangaDownloader.MangaRetrievers
             htmlDoc.LoadXml(XMLHelper.SanitizeHTML(xml));
             Debug.WriteLine("Update Started");
             var container = htmlDoc.DocumentElement.GetElementsByClassName("container")[1];
-            var chapterElements = container.GetNthElement(3).GetElementsByTagName("a").OfType<XmlElement>().ToList();
+            var chapterElements = container.GetNthElement(1).GetElementsByTagName("a").OfType<XmlElement>().ToList();
             var previousChapterTitles = parent.Chapters.Select(item => item.Title).ToList();
-            //chapterElements.Count
             for (int i = 0; i < chapterElements.Count; i++)
             {
-                var chapter = FetchChapter(
-                    parent, 
-                    $"{HomePage}{chapterElements[i].GetAttribute("href")}", 
-                    chapterElements[i].InnerText.Trim()
-                );
-                var isOld = previousChapterTitles.Contains(chapter.Title);
-                if (!isOld)
+                var chapterName = chapterElements[i].InnerText.Trim();                
+                if (!previousChapterTitles.Contains(chapterName))
                 {
+                    var chapter = FetchChapter(
+                        parent,
+                        $"{HomePage}{chapterElements[i].GetAttribute("href")}",
+                        chapterName
+                    );
                     parent.MergeChapter(chapter);
                 }
             }
