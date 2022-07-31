@@ -1,5 +1,6 @@
 ﻿using MangaDownloader.IOUtilities;
 using MangaDownloader.MangaRetrievers;
+using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -194,7 +195,7 @@ namespace MangaDownloader
                     mangaListBox.Items.Refresh();
                     var retriever = MangaRetrievers[searchMangaDialog.SelectedRetrieverIndex];
                     await Task.Factory.StartNew(
-                        () => retriever.FetchManga(Mangas, txt), 
+                        () => retriever.FetchManga(Mangas, txt),
                         TaskCreationOptions.AttachedToParent
                     );
                     Mangas.Remove(loadingManga);
@@ -694,12 +695,8 @@ namespace MangaDownloader
 
         public async void OpenFolder_Click(object obj, RoutedEventArgs args)
         {
-            var folderDialog = new System.Windows.Forms.FolderBrowserDialog()
-            {
-                SelectedPath = "F:\\Projects\\Tests\\Manga"
-            };
-
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            VistaFolderBrowserDialog folderDialog = new VistaFolderBrowserDialog();
+            if (folderDialog.ShowDialog() ?? false)
             {
                 await Task.Factory.StartNew(() => OpenFolder(folderDialog.SelectedPath));
             }
@@ -865,7 +862,7 @@ namespace MangaDownloader
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         protected void OnPropertyChanged(string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
