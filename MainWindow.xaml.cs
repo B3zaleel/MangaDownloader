@@ -398,6 +398,7 @@ namespace MangaDownloader
             var filesAvailable = false;
             var mangaFolderName = IOHelper.ValidateFileName(chapter.Parent.Title);
             var chapterFolderName = IOHelper.ValidateFileName(chapter.Title);
+            int savedPages = 0;
             if (File.Exists($"{BaseDir}\\{mangaFolderName}\\{chapterFolderName}.{chapter.Parent.BookFormat}"))
                 filesAvailable = true;
             else
@@ -406,33 +407,41 @@ namespace MangaDownloader
                 foreach (var page in chapter.Pages)
                 {
                     if (!File.Exists($"{BaseDir}\\{mangaFolderName}\\{chapterFolderName}\\{page.Address.Split('/').Last()}"))
-                    {
                         filesAvailable = false;
-                    }
+                    else
+                        savedPages++;
                 }
             }
-            if (!chapter.IsComplete)
+            if (!filesAvailable)
             {
-                if (!filesAvailable)
+                chapter.IsComplete = false;
+                chapter.Progress = (byte)Math.Floor((float)savedPages / chapter.Pages.Count * 100);
+                Dispatcher.Invoke(() =>
                 {
-                    try
-                    {
-                        await Task.Factory.StartNew(() => IOHelper.DownloadChapter(BaseDir, chapter), TaskCreationOptions.AttachedToParent);
-                        SendNotification($"Downloaded {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
-                    }
-                    catch (NotificationError ne)
-                    {
-                        SendNotification(ne.Notification, ne.Type);
-                    }
-                }
-                else
+                    OnPropertyChanged("MangaChapters");
+                    chapterListView.Items.Refresh();
+                });
+                try
                 {
-                    foreach (var page in chapter.Pages)
-                    {
-                        page.Saved = true;
-                    }
-                    chapter.IsComplete = true;
+                    await Task.Factory.StartNew(() => IOHelper.DownloadChapter(BaseDir, chapter), TaskCreationOptions.AttachedToParent);
+                    SendNotification($"Downloaded {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
                 }
+                catch (NotificationError ne)
+                {
+                    SendNotification(ne.Notification, ne.Type);
+                }
+            }
+            else
+            {
+                foreach (var page in chapter.Pages)
+                    page.Saved = true;
+                chapter.IsComplete = true;
+                chapter.Progress = 100;
+                Dispatcher.Invoke(() =>
+                {
+                    OnPropertyChanged("MangaChapters");
+                    chapterListView.Items.Refresh();
+                });
             }
         }
 
