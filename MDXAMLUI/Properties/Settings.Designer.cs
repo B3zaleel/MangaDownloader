@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MangaDownloader.Properties
+namespace MDXAMLUI.Properties
 {
 
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MangaDownloader.MangaRetrievers
+namespace MDXAMLUI.MangaRetrievers
 {
     public interface IMangaRetriever
     {

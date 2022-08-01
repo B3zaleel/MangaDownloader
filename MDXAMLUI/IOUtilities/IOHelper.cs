@@ -1,4 +1,4 @@
-﻿using MangaDownloader.Events;
+﻿using MDXAMLUI.Events;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 
-namespace MangaDownloader.IOUtilities
+namespace MDXAMLUI.IOUtilities
 {
     public class IOHelper
     {
@@ -85,7 +85,7 @@ namespace MangaDownloader.IOUtilities
             {
                 case BookFormats.cbz:
                     {
-                        
+
                         Process.Start(new ProcessStartInfo()
                         {
                             FileName = archiverPath,

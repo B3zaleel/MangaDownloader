@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 
-namespace MangaDownloader
+namespace MDXAMLUI
 {
     public static class XMLHelper
     {

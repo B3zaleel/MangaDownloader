@@ -1,4 +1,4 @@
-﻿namespace MangaDownloader
+﻿namespace MDXAMLUI
 {
     public class CoverImage
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace MangaDownloader.Events
+namespace MDXAMLUI.Events
 {
     /// <summary>
     /// Represents the method that will handle the NotificationEventArgs event raised when an operation's status has changed.
