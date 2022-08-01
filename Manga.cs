@@ -27,6 +27,7 @@ namespace MangaDownloader
         {
             IsAvailable = true;
             OtherProps = new Dictionary<string, string>();
+            BookFormat = BookFormats.none;
         }
 
         public string Title { get; set; }
@@ -55,7 +56,6 @@ namespace MangaDownloader
         }
         public string[] Genres { get; set; }
         public string Address { get; set; }
-
 
         public bool IsAvailable { get; set; }
         public bool IsUpdatingChapters { get; set; }
