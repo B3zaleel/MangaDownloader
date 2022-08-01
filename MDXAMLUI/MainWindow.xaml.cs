@@ -1,5 +1,5 @@
-﻿using MangaDownloader.IOUtilities;
-using MangaDownloader.MangaRetrievers;
+﻿using MDXAMLUI.IOUtilities;
+using MDXAMLUI.MangaRetrievers;
 using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
@@ -25,9 +25,9 @@ using System.Windows.Shell;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Timers;
-using MangaDownloader.Events;
+using MDXAMLUI.Events;
 
-namespace MangaDownloader
+namespace MDXAMLUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

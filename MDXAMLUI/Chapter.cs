@@ -4,7 +4,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace MangaDownloader
+namespace MDXAMLUI
 {
     public class Chapter : INotifyPropertyChanged
     {
