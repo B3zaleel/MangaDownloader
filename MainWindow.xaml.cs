@@ -877,24 +877,16 @@ namespace MangaDownloader
                 switch (args.NotificationType)
                 {
                     case NotificationType.FinishedTask:
-                        notificationAudioElement.Source = new Uri($"pack://application:,,,/Assets/Sounds/sharp-592.mp3");
                         break;
                     case NotificationType.Success:
-                        notificationAudioElement.Source = new Uri($"pack://application:,,,/Assets/Sounds/pristine-609.mp3");
                         break;
                     case NotificationType.Error:
-                        notificationAudioElement.Source = new Uri($"pack://application:,,,/Assets/Sounds/system-fault-518.mp3");
                         break;
                     case NotificationType.None:
                     default:
                         break;
                 }
                 snackbar.MessageQueue.Enqueue(args.Message);
-                notificationAudioElement.MediaOpened += (obj, ev) => {
-                    snackbar.MessageQueue.Enqueue(args.Message);
-                    Debug.WriteLine("Music played");
-                };
-                notificationAudioElement.Play();
             });
         }
 
