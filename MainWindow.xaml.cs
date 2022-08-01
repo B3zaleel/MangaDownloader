@@ -124,8 +124,8 @@ namespace MangaDownloader
             }
         }
 
-        private bool IOOperationOngoing { get; set; }
-        private bool IsDarkModeEnabled { get; set; }
+        public bool IOOperationOngoing { get; set; }
+        public bool IsDarkModeEnabled { get; set; }
         public bool IsUpdateEnabled
         {
             get
