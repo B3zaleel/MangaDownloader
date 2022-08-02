@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace MangaDownloader.IOUtilities
+namespace MDXAMLUI.IOUtilities
 {
     public static class JSONFormat
     {

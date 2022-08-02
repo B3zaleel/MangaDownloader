@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaDownloader", "MangaDownloader.csproj", "{3EA62E95-4610-48A5-AA4D-AEABA2C39099}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDXAMLUI", "MDXAMLUI/MDXAMLUI.csproj", "{3EA62E95-4610-48A5-AA4D-AEABA2C39099}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

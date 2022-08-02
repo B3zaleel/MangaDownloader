@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MangaDownloader.IOUtilities
+namespace MDXAMLUI.IOUtilities
 {
     public enum SerializationType
     {

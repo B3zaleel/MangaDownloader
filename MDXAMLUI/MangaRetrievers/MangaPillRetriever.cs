@@ -1,4 +1,4 @@
-﻿using MangaDownloader.Events;
+﻿using MDXAMLUI.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 
-namespace MangaDownloader.MangaRetrievers
+namespace MDXAMLUI.MangaRetrievers
 {
     public class MangaPillRetriever : IMangaRetriever
     {
@@ -99,7 +99,7 @@ namespace MangaDownloader.MangaRetrievers
             for (int i = 0; i < Math.Min(chapterElements.Count, MainWindow.MinChaptersToGet); i++)
             {
                 var chapter = FetchChapter(
-                    manga, 
+                    manga,
                     $"{HomePage}{chapterElements[i].GetAttribute("href")}",
                     chapterElements[i].InnerText.Trim()
                 );
@@ -175,7 +175,7 @@ namespace MangaDownloader.MangaRetrievers
             var previousChapterTitles = parent.Chapters.Select(item => item.Title).ToList();
             for (int i = 0; i < chapterElements.Count; i++)
             {
-                var chapterName = chapterElements[i].InnerText.Trim();                
+                var chapterName = chapterElements[i].InnerText.Trim();
                 if (!previousChapterTitles.Contains(chapterName))
                 {
                     var chapter = FetchChapter(

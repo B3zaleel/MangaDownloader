@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MangaDownloader
+namespace MDXAMLUI
 {
     public enum NotificationType
     {
