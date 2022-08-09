@@ -9,8 +9,8 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        WindowStartupLocation="CenterOwner" Icon="./Assets/Icon.png"
-        Title="Search Manga" Height="180" Width="400">
+        WindowStartupLocation="CenterOwner"
+        Title="Search Manga" Height="180" Width="400" Icon="Assets/Icon.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
