@@ -1,24 +1,23 @@
 ﻿using System;
 
-namespace MDXAMLUI
+namespace MDXAMLUI;
+
+public enum NotificationType
 {
-    public enum NotificationType
-    {
-        None,
-        FinishedTask,
-        Success,
-        Error,
-    }
+    None,
+    FinishedTask,
+    Success,
+    Error,
+}
 
-    public class NotificationError : Exception
-    {
-        public string Notification { get; private set; }
-        public NotificationType Type { get; private set; }
+public class NotificationError : Exception
+{
+    public string Notification { get; private set; }
+    public NotificationType Type { get; private set; }
 
-        public NotificationError(string notificationMsg, NotificationType notificationType = NotificationType.None)
-        {
-            Notification = notificationMsg;
-            Type = notificationType;
-        }
+    public NotificationError(string notificationMsg, NotificationType notificationType = NotificationType.None)
+    {
+        Notification = notificationMsg;
+        Type = notificationType;
     }
 }
