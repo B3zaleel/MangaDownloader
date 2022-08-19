@@ -348,27 +348,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void ArchiveAllMangaChapters_Click(object sender, RoutedEventArgs args)
     {
-        for (int i = Mangas[mangaListBox.SelectedIndex].Chapters.ToList().Count - 1; i > -1; i--)
+        int mangasIndex = mangaListBox.SelectedIndex;
+        await Task.Factory.StartNew(() =>
         {
-            var chapter = Mangas[mangaListBox.SelectedIndex].Chapters.ToList()[i];
-            if (!chapter.IsArchiving && chapter.IsComplete)
-            {
-                chapter.IsArchiving = true;
-
-                try
-                {
-                    await Task.Factory.StartNew(() => IOHelper.ArchiveChapter(BaseDir, chapter), TaskCreationOptions.AttachedToParent);
-                    SendNotification($"Archived {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
-                }
-                catch (NotificationError ne)
-                {
-                    SendNotification($"Failed archive {chapter.Parent.Title} \u226B {chapter.Title}\n{ne.Notification}", ne.Type);
-                }
-
-                chapter.IsArchiving = false;
-
-            }
-        }
+            IOHelper.RunBulkJob(BaseDir, Mangas[mangasIndex], IOHelper.ArchiveChapter);
+        });
     }
 
     private async void LoadMangaCoverImage_Click(object sender, RoutedEventArgs args)
