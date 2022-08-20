@@ -12,6 +12,8 @@ namespace MDXAMLUI.IOUtilities;
 
 public class IOHelper
 {
+    public delegate void JobHandler(string rootDir, Chapter chapter);
+
     public static string ValidateFileName(string fileName)
     {
         var fileValidation = new Regex("[\\/*:?\"<>|]");
@@ -69,6 +71,22 @@ public class IOHelper
         if (!Directory.Exists(chapterDir))
             return;
         var chapterFile = $"{rootDir}\\{ValidateFileName(chapter.Parent.Title)}\\{ValidateFileName(chapter.Title)}.{chapter.Parent.BookFormat}";
+        if (File.Exists(chapterFile))
+            return;
+        var filesAvailable = true;
+        if (chapter.Parent.BookFormat != BookFormats.none)
+        {
+            filesAvailable = chapter.Pages.All(page => File.Exists($"{rootDir}\\{ValidateFileName(chapter.Parent.Title)}\\{ValidateFileName(chapter.Title)}\\{page.Address.Split('/').Last()}"));
+        }
+        if (!filesAvailable)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var evt = new NotificationEventArgs($"{chapter.Parent.Title} \u226B {chapter.Title} is incomplete", NotificationType.Error);
+                Application.Current.MainWindow.RaiseEvent(evt);
+            });
+            return;
+        }
         var archiverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Libs", "7za.exe");
         if (!File.Exists(archiverPath))
             archiverPath = "C:\\Program Files\\7-Zip\\7z.exe";
@@ -118,6 +136,11 @@ public class IOHelper
                     break;
                 }
         }
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            var evt = new NotificationEventArgs($"Archived {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
+            Application.Current.MainWindow.RaiseEvent(evt);
+        });
     }
 
     public static void UnarchiveChapter(string rootDir, Chapter chapter)
@@ -189,6 +212,20 @@ public class IOHelper
             {
                 return;
             }
+        }
+    }
+    
+    /// <summary>
+    /// Runs a job for a range of chapters in the given Manga.
+    /// </summary>
+    /// <param name="rootDir"></param>
+    /// <param name="manga"></param>
+    /// <param name="jobHandler"></param>
+    public static void RunBulkJob(string rootDir, Manga manga, JobHandler jobHandler)
+    {
+        for (int i = manga.Chapters.ToList().Count - 1; i > -1; i--)
+        {
+            jobHandler(rootDir, manga.Chapters[i]);
         }
     }
 }
