@@ -1,29 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="MangaDownloader" Language="1033" Version="1.0.0.0" Manufacturer="Bezaleel Olakunori" UpgradeCode="ae20d748-eb9f-47e6-bf1d-b693ed26c888">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+  <Product Id="*" Name="MangaDownloader" Language="1033" Version="1.0.0.0" Manufacturer="Bezaleel Olakunori" UpgradeCode="ae20d748-eb9f-47e6-bf1d-b693ed26c888">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate EmbedCab="yes"/>
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes"/>
 
-		<Feature Id="ProductFeature" Title="MDXAMLUI" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
-		</Feature>
-	</Product>
+    <Feature Id="ProductFeature" Title="MDXAMLUI" Level="1">
+      <ComponentRef Id="MangaDownloaderBuildFiles"/>
+      <ComponentRef Id="MangaDownloaderExternalPackages"/>
+      <ComponentRef Id="MangaDownloaderAssetLibraries"/>
+      <ComponentRef Id="MangaDownloaderAssetImages"/>
+    </Feature>
+  </Product>
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="MangaDownloader" />
-			</Directory>
-		</Directory>
-	</Fragment>
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="MangaDownloader">
+          <Directory Id="ASSETS_FOLDER" Name="Assets">
+            <Directory Id="ASSETS_LIBS_FOLDER" Name="Libs"/>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
 
-	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<Component Id="MangaDownloaderMSI">
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			</Component>
-		</ComponentGroup>
-	</Fragment>
+  <Fragment>
+    <Component Id="MangaDownloaderBuildFiles" Directory="INSTALLFOLDER"
+               Guid="{d1bc799d-747f-42a7-becd-afd8e1fa1575}">
+      <File Source="$(var.MDXAMLUI.TargetDir)MDXAMLUI.deps.json"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)MDXAMLUI.dll"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)MDXAMLUI.exe"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)MDXAMLUI.runtimeconfig.json"/>
+    </Component>
+
+    <Component Id="MangaDownloaderExternalPackages" Directory="INSTALLFOLDER"
+               Guid="{a582e894-3970-4915-8fa8-523a83aa7497}">
+      <File Source="$(var.MDXAMLUI.TargetDir)HtmlAgilityPack.dll"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)MaterialDesignColors.dll"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)MaterialDesignThemes.Wpf.dll"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)Newtonsoft.Json.dll"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)Ookii.Dialogs.Wpf.dll"/>
+    </Component>
+
+    <Component Id="MangaDownloaderAssetLibraries" Directory="ASSETS_LIBS_FOLDER"
+               Guid="{68f6b384-7284-4315-9647-cc40ff54327b}">
+      <File Source="$(var.MDXAMLUI.TargetDir)Assets\Libs\7za.exe"/>
+    </Component>
+
+    <Component Id="MangaDownloaderAssetImages" Directory="ASSETS_FOLDER"
+               Guid="{529810ea-c116-4e3a-a200-f82c5b32b9c8}">
+      <File Source="$(var.MDXAMLUI.TargetDir)Assets\Icon.ico"/>
+      <File Source="$(var.MDXAMLUI.TargetDir)Assets\Icon.png"/>
+    </Component>
+  </Fragment>
 </Wix>
