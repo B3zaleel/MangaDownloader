@@ -14,18 +14,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\Icon.ico">
+    <EmbeddedResource Include="Assets\Icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Icon.png">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Assets\Icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\Libs\7za.exe">
+    <EmbeddedResource Include="Assets\Libs\7za.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
