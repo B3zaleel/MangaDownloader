@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>05811f1d-5a63-48df-be29-5eba520c9409</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>MDXAMLUI</OutputName>
+    <OutputName>MangaDownloader</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -22,8 +22,8 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MDXAMLUI\MDXAMLUI.csproj">
-      <Name>MDXAMLUI</Name>
+    <ProjectReference Include="..\UI\MangaDownloader.csproj">
+      <Name>MangaDownloader</Name>
       <Project>{d812017e-f151-4212-94ad-47d15c82fec5}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
