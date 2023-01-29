@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace MDXAMLUI.Converters;
+namespace MangaDownloader.Converters;
 
 public class ProgressToMarginConverter : IValueConverter
 {

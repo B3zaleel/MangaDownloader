@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MDXAMLUI.IOUtilities;
+namespace MangaDownloader.IOUtilities;
 
 public enum SerializationType
 {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace MDXAMLUI;
+namespace MangaDownloader;
 
 /// <summary>
 /// Interaction logic for SearchMangaDialog.xaml

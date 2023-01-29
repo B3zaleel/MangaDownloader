@@ -1,4 +1,4 @@
-﻿using MDXAMLUI.Events;
+﻿using MangaDownloader.Events;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 
-namespace MDXAMLUI.IOUtilities;
+namespace MangaDownloader.IOUtilities;
 
 public class IOHelper
 {
@@ -214,7 +214,7 @@ public class IOHelper
             }
         }
     }
-    
+
     /// <summary>
     /// Runs a job for a range of chapters in the given Manga.
     /// </summary>

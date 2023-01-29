@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace MDXAMLUI.MangaRetrievers;
+namespace MangaDownloader.MangaRetrievers;
 
 public static class MangaRetrieverHelper
 {

@@ -1,4 +1,4 @@
-﻿namespace MDXAMLUI;
+﻿namespace MangaDownloader;
 
 public class Page
 {

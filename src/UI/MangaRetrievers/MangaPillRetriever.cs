@@ -1,4 +1,4 @@
-﻿using MDXAMLUI.Events;
+﻿using MangaDownloader.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Windows;
 using System.Xml;
 
-namespace MDXAMLUI.MangaRetrievers;
+namespace MangaDownloader.MangaRetrievers;
 
 public class MangaPillRetriever : IMangaRetriever
 {
