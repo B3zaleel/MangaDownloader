@@ -2,7 +2,7 @@
 
 MangaDownloader is an application for downloading manga titles.
 
-![A screenshot of MangaDownloader XAMLUI](MDXAMLUI/Assets/Screenshot.png)
+![A screenshot of MangaDownloader XAMLUI](src/UI/Assets/Screenshot.png)
 
 ## How To Use
 

@@ -1,9 +1,9 @@
-﻿<Window x:Class="MDXAMLUI.SearchMangaDialog"
+﻿<Window x:Class="MangaDownloader.SearchMangaDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MDXAMLUI"
+        xmlns:local="clr-namespace:MangaDownloader"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -22,8 +22,8 @@
             <Label FontWeight="Bold" VerticalAlignment="Center">
                 Retriever
             </Label>
-            <ComboBox Name="retrieverComboBox" 
-                      ItemsSource="{Binding RetrieverNames, Mode=OneWay}" 
+            <ComboBox Name="retrieverComboBox"
+                      ItemsSource="{Binding RetrieverNames, Mode=OneWay}"
                       SelectedIndex="{Binding SelectedRetrieverIndex, Mode=TwoWay}"
                       VerticalAlignment="Center"/>
         </StackPanel>
@@ -32,10 +32,10 @@
             <Label FontWeight="Bold" VerticalAlignment="Center">
                 URL
             </Label>
-            <TextBox x:Name="searchQueryTxb" 
-                     Text="{Binding URL, Mode=TwoWay}" 
-                     VerticalAlignment="Center" 
-                     MinWidth="250" 
+            <TextBox x:Name="searchQueryTxb"
+                     Text="{Binding URL, Mode=TwoWay}"
+                     VerticalAlignment="Center"
+                     MinWidth="250"
                      MouseDoubleClick="SearchQueryTxb_MouseDown" KeyDown="SearchQueryTxb_KeyDown"/>
         </StackPanel>
 

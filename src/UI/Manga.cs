@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace MDXAMLUI;
+namespace MangaDownloader;
 
 public enum BookFormats
 {

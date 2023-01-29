@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
-namespace MDXAMLUI.Converters;
+namespace MangaDownloader.Converters;
 
 public class CoverImageToImageSourceConverter : IValueConverter
 {

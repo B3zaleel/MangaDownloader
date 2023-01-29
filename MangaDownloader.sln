@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MDXAMLUI", "MDXAMLUI\MDXAMLUI.csproj", "{D812017E-F151-4212-94AD-47D15C82FEC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MangaDownloader", "src\UI\MangaDownloader.csproj", "{D812017E-F151-4212-94AD-47D15C82FEC5}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MDXAMLUI_Setup", "MDXAMLUI_Setup\MDXAMLUI_Setup.wixproj", "{05811F1D-5A63-48DF-BE29-5EBA520C9409}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MangaDownloaderSetup", "src\Setup\MangaDownloaderSetup.wixproj", "{05811F1D-5A63-48DF-BE29-5EBA520C9409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

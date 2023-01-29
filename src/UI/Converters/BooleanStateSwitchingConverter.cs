@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace MDXAMLUI.Converters;
+namespace MangaDownloader.Converters;
 
 public class BooleanStateSwitchingConverter : IValueConverter
 {

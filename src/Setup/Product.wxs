@@ -1,0 +1,50 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="MangaDownloader" Language="1033" Version="1.0.0.0" Manufacturer="Bezaleel Olakunori" UpgradeCode="ae20d748-eb9f-47e6-bf1d-b693ed26c888" InstallerVersion="200">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="MangaDownloader" Level="1">
+      <ComponentRef Id="MangaDownloaderBuildFiles" />
+      <ComponentRef Id="MangaDownloaderExternalPackages" />
+      <ComponentRef Id="MangaDownloaderAssetLibraries" />
+      <ComponentRef Id="MangaDownloaderAssetImages" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="MangaDownloader">
+        <Directory Id="ASSETS_FOLDER" Name="Assets">
+          <Directory Id="ASSETS_LIBS_FOLDER" Name="Libs" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <Component Id="MangaDownloaderBuildFiles" Directory="INSTALLFOLDER" Guid="{d1bc799d-747f-42a7-becd-afd8e1fa1575}">
+      <File Id="___var.MangaDownloader.TargetDir_MangaDownloader.deps.json" Source="$(var.MangaDownloader.TargetDir)MangaDownloader.deps.json" />
+      <File Id="___var.MangaDownloader.TargetDir_MangaDownloader.dll" Source="$(var.MangaDownloader.TargetDir)MangaDownloader.dll" />
+      <File Id="___var.MangaDownloader.TargetDir_MangaDownloader.exe" Source="$(var.MangaDownloader.TargetDir)MangaDownloader.exe" />
+      <File Id="___var.MangaDownloader.TargetDir_MangaDownloader.runtimeconfig.json" Source="$(var.MangaDownloader.TargetDir)MangaDownloader.runtimeconfig.json" />
+    </Component>
+
+    <Component Id="MangaDownloaderExternalPackages" Directory="INSTALLFOLDER" Guid="{a582e894-3970-4915-8fa8-523a83aa7497}">
+      <File Id="___var.MangaDownloader.TargetDir_HtmlAgilityPack.dll" Source="$(var.MangaDownloader.TargetDir)HtmlAgilityPack.dll" />
+      <File Id="___var.MangaDownloader.TargetDir_MaterialDesignColors.dll" Source="$(var.MangaDownloader.TargetDir)MaterialDesignColors.dll" />
+      <File Id="___var.MangaDownloader.TargetDir_MaterialDesignThemes.Wpf.dll" Source="$(var.MangaDownloader.TargetDir)MaterialDesignThemes.Wpf.dll" />
+      <File Id="___var.MangaDownloader.TargetDir_Newtonsoft.Json.dll" Source="$(var.MangaDownloader.TargetDir)Newtonsoft.Json.dll" />
+      <File Id="___var.MangaDownloader.TargetDir_Ookii.Dialogs.Wpf.dll" Source="$(var.MangaDownloader.TargetDir)Ookii.Dialogs.Wpf.dll" />
+    </Component>
+
+    <Component Id="MangaDownloaderAssetLibraries" Directory="ASSETS_LIBS_FOLDER" Guid="{68f6b384-7284-4315-9647-cc40ff54327b}">
+      <File Id="_7za.exe" Source="$(var.MangaDownloader.TargetDir)Assets\Libs\7za.exe" />
+    </Component>
+
+    <Component Id="MangaDownloaderAssetImages" Directory="ASSETS_FOLDER" Guid="{529810ea-c116-4e3a-a200-f82c5b32b9c8}">
+      <File Id="Icon.ico" Source="$(var.MangaDownloader.TargetDir)Assets\Icon.ico" />
+      <File Id="Icon.png" Source="$(var.MangaDownloader.TargetDir)Assets\Icon.png" />
+    </Component>
+  </Fragment>
+</Wix>
