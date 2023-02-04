@@ -256,7 +256,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 previousMangaIdx = i - 1;
             }
         }
-        if (mangaIdx > 0)
+        if (previousMangaIdx >= 0)
         {
             // move up
             var previousManga = Mangas[previousMangaIdx];
