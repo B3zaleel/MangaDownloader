@@ -136,11 +136,6 @@ public class IOHelper
                     break;
                 }
         }
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            var evt = new NotificationEventArgs($"Archived {chapter.Parent.Title} \u226B {chapter.Title}", NotificationType.FinishedTask);
-            Application.Current.MainWindow.RaiseEvent(evt);
-        });
     }
 
     public static void UnarchiveChapter(string rootDir, Chapter chapter)
